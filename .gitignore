@@ -1,39 +1,28 @@
-# === Python / Flask (backend) ===
+# Python / Flask
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
-*.egg-info/
-.env
-.env.*.local
 venv/
 src/venv/
 backend/venv/
-*.sqlite3
 *.db
-instance/
+*.sqlite3
 *.log
+instance/
 
-# heavy artifacts (models, data dumps, embeddings)
+# Heavy artifacts
 backend/models/
 backend/data/
 backend/__pycache__/
 backend/src/*.db
 
-# === Node / React (frontend) ===
+# Node / React
 node_modules/
 dist/
 build/
 .vite/
-*.local
 
-# === OS / Editor ===
+# OS / Editor
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
-
-# === Misc ===
-*.coverage
-coverage/
-.cache/
