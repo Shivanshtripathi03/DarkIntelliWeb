@@ -1,18 +1,33 @@
-# Python
+# === Python / Flask (backend) ===
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+.env
+.env.*.local
 venv/
 src/venv/
+backend/venv/
+*.sqlite3
+*.db
+instance/
+*.log
 
-# Node / React
+# === Node / React (frontend) ===
 node_modules/
 dist/
 build/
 .vite/
+*.local
 
-# OS/editor
+# === OS / Editor ===
 .DS_Store
+Thumbs.db
+.idea/
+.vscode/
 
-# Environment
-.env
-.env.*.local
+# === Misc ===
+*.coverage
+coverage/
+.cache/
