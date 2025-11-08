@@ -14,6 +14,12 @@ backend/venv/
 instance/
 *.log
 
+# heavy artifacts (models, data dumps, embeddings)
+backend/models/
+backend/data/
+backend/__pycache__/
+backend/src/*.db
+
 # === Node / React (frontend) ===
 node_modules/
 dist/
