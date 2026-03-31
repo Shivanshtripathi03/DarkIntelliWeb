@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  tor:
+    image: peterdavehello/tor-socks-proxy:latest
+    ports:
+      - "8118:8118"
+      - "9050:9050"
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:6-jammy
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  backend:
+    build: 
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+      - redis
+      - tor
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+      - REDIS_URI=redis://redis:6379
+      - TOR_PROXY_URL=socks5://tor:9050
+    volumes:
+      - .:/app
+    command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    depends_on:
+      - mongodb
+      - redis
+      - tor
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+      - REDIS_URI=redis://redis:6379
+      - TOR_PROXY_URL=socks5://tor:9050
+    volumes:
+      - .:/app
+    command: celery -A scheduler.celery_app worker -B --loglevel=info
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: dashboard/Dockerfile
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    environment:
+      - BACKEND_API_URL=http://backend:8000
+    volumes:
+      - .:/app
+    command: streamlit run dashboard/app.py --server.port=8501 --server.address=0.0.0.0
+
+volumes:
+  mongo_data:

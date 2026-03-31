@@ -1,0 +1,28 @@
+crawler:
+  proxy: socks5://tor:9150
+  crawl_interval_minutes: 360
+  max_depth: 2
+  timeout_seconds: 60
+
+scoring:
+  high_risk_threshold: 70
+  weights:
+    ai_confidence: 0.4
+    category_severity: 0.4
+    indicator_criticality: 0.2
+
+apis:
+  abuseipdb: ""
+  virustotal: ""
+  ipinfo: ""
+
+categories_severity:
+  "data breaches": 90
+  "ransomware activity": 95
+  "malware marketplaces": 85
+  "exploit trading": 85
+  "credential dumps": 90
+  "botnet services": 80
+  "hacking services": 75
+  "carding marketplaces": 80
+  "stolen databases": 90
