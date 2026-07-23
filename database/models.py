@@ -15,6 +15,8 @@ class ThreatLog(BaseModel):
     confidence: float
     extracted_indicators: List[Indicator] = []
     content_snippet: str
+    is_synthetic: bool = False
+    triage: Optional[dict] = None
 
 class Alert(BaseModel):
     threat_log_id: str

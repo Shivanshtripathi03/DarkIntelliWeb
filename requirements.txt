@@ -18,3 +18,9 @@ pandas
 python-dotenv
 pytest
 requests
+stem
+pycountry
+tldextract
+anthropic
+playwright
+pyyaml

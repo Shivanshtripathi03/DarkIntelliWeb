@@ -22,6 +22,7 @@ build/
 # Environment & Secrets
 .env
 .env.*
+!.env.example
 *.local
 
 # OS / Editor

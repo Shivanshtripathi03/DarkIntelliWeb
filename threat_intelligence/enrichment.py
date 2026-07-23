@@ -1,13 +1,14 @@
 import asyncio
 import aiohttp
 import base64
+import os
 from config.loader import load_config
 from config.logger import setup_logger
 
 logger = setup_logger("enrichment")
 config = load_config()
 
-# Read API keys safely
+# Read API keys — config loader already merges env vars over config.yaml
 APIS = config.get("apis", {})
 ABUSEIPDB_KEY = APIS.get("abuseipdb", "")
 VIRUSTOTAL_KEY = APIS.get("virustotal", "")

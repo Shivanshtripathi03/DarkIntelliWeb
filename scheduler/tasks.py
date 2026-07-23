@@ -5,8 +5,9 @@ from config.loader import load_targets
 from crawler.scraper import DarkWebCrawler
 from ai_engine.classifier import analyze_text
 from ioc_extractor.extractor import extract_iocs
-from risk_scoring.scorer import calculate_risk
+from risk_scoring.scorer import calculate_risk, calculate_risk_with_triage
 from threat_intelligence.enrichment import enrich_indicator
+from config.loader import load_targets, load_config, save_targets
 from database.db import db
 from datetime import datetime
 
@@ -63,8 +64,14 @@ async def process_raw_pages():
                 ioc["metadata"] = meta
                 enriched_iocs.append(ioc)
                 
-            # Calculate Risk
-            risk_score = calculate_risk(category, confidence, enriched_iocs)
+            # Calculate Risk with optional autonomous triage
+            risk_result = await asyncio.to_thread(
+                calculate_risk_with_triage,
+                category, confidence, enriched_iocs,
+                {"url": url, "content_snippet": text[:500]}
+            )
+            risk_score = risk_result["risk_score"]
+            triage = risk_result.get("triage")
             
             # Store Threat Analysis
             analysis_doc = {
@@ -77,14 +84,39 @@ async def process_raw_pages():
                 "content_snippet": text[:500]
             }
             
+            # Attach triage decision if available
+            if triage:
+                analysis_doc["triage"] = triage
+            
             result = await db.threat_analysis.insert_one(analysis_doc)
             
+            # Handle autonomous pivot suggestions (queue new .onion URLs)
+            if triage and triage.get("suggested_pivots"):
+                current_targets = load_targets()
+                for pivot_url in triage["suggested_pivots"]:
+                    if pivot_url not in current_targets and ".onion" in pivot_url:
+                        current_targets.append(pivot_url)
+                        logger.info(f"Triage agent queued new target: {pivot_url}")
+                save_targets(current_targets)
+            
             # Alerting
-            from config.loader import load_config
             conf = load_config()
             thresh = conf.get("scoring", {}).get("high_risk_threshold", 70)
             
-            if risk_score >= thresh:
+            # Use triage action for alert level when available
+            if triage and triage.get("action") == "escalate":
+                alert_level = "CRITICAL"
+                alert_msg = f"[TRIAGE: ESCALATE] {triage.get('justification', '')} | {url}"
+                alert = {
+                    "threat_log_id": str(result.inserted_id),
+                    "timestamp": datetime.utcnow(),
+                    "level": alert_level,
+                    "message": alert_msg,
+                    "read": False
+                }
+                await db.alerts.insert_one(alert)
+                logger.warning(f"ALERT: {alert['message']}")
+            elif risk_score >= thresh:
                 alert = {
                     "threat_log_id": str(result.inserted_id),
                     "timestamp": datetime.utcnow(),

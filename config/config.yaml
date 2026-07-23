@@ -1,8 +1,10 @@
 crawler:
-  proxy: socks5://tor:9150
+  proxy: socks5://localhost:9050
   crawl_interval_minutes: 360
   max_depth: 2
   timeout_seconds: 60
+  circuit_rotation_interval: 10
+  js_content_threshold: 200
 
 scoring:
   high_risk_threshold: 70
@@ -15,6 +17,10 @@ apis:
   abuseipdb: ""
   virustotal: ""
   ipinfo: ""
+
+triage:
+  enabled: false
+  cache_ttl_hours: 24
 
 categories_severity:
   "data breaches": 90

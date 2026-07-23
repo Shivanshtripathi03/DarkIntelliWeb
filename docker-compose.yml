@@ -2,11 +2,16 @@ version: '3.8'
 
 services:
   tor:
-    image: peterdavehello/tor-socks-proxy:latest
+    build: ./docker/tor
     ports:
-      - "8118:8118"
       - "9050:9050"
+      - "9051:9051"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "echo > /dev/tcp/localhost/9050 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mongodb:
     image: mongo:6-jammy
@@ -29,13 +34,20 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - mongodb
-      - redis
-      - tor
+      tor:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+    env_file:
+      - .env
     environment:
       - MONGO_URI=mongodb://mongodb:27017
       - REDIS_URI=redis://redis:6379
       - TOR_PROXY_URL=socks5://tor:9050
+      - TOR_CONTROL_HOST=tor
+      - TOR_CONTROL_PORT=9051
     volumes:
       - .:/app
     command: uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
@@ -45,16 +57,38 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     depends_on:
-      - mongodb
-      - redis
-      - tor
+      tor:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      redis:
+        condition: service_started
+    env_file:
+      - .env
     environment:
       - MONGO_URI=mongodb://mongodb:27017
       - REDIS_URI=redis://redis:6379
       - TOR_PROXY_URL=socks5://tor:9050
+      - TOR_CONTROL_HOST=tor
+      - TOR_CONTROL_PORT=9051
     volumes:
       - .:/app
     command: celery -A scheduler.celery_app worker -B --loglevel=info
+
+  browser_crawler:
+    build:
+      context: .
+      dockerfile: docker/browser-crawler/Dockerfile
+    depends_on:
+      tor:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - TOR_PROXY_URL=socks5://tor:9050
+      - MONGO_URI=mongodb://mongodb:27017
+    volumes:
+      - .:/app
 
   dashboard:
     build:
@@ -64,6 +98,8 @@ services:
       - "8501:8501"
     depends_on:
       - backend
+    env_file:
+      - .env
     environment:
       - BACKEND_API_URL=http://backend:8000
     volumes:

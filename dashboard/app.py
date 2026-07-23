@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import requests
 import os
+import pycountry
 import networkx as nx
 import plotly.express as px
 import plotly.graph_objects as go
@@ -128,7 +129,40 @@ page = st.sidebar.radio("Navigation", [
     "Settings"
 ], label_visibility="collapsed")
 st.sidebar.markdown("---")
-st.sidebar.info("System Status: **Active**\n\nAI Engine: **Online**")
+# Real system status checks
+def _get_system_status():
+    """Check backend connectivity."""
+    try:
+        r = requests.get(f"{API_URL}/overview", timeout=3)
+        return "Active" if r.status_code == 200 else "Degraded"
+    except Exception:
+        return "Offline"
+
+def _get_ai_engine_status():
+    """Check if the AI classification model is loaded."""
+    try:
+        from ai_engine.classifier import get_classifier
+        clf = get_classifier()
+        return "Online" if clf and clf != "keyword_fallback" else "Fallback Mode"
+    except Exception:
+        return "Offline"
+
+_sys_status = _get_system_status()
+_ai_status = _get_ai_engine_status()
+_sys_icon = "🟢" if _sys_status == "Active" else "🟡" if _sys_status == "Degraded" else "🔴"
+_ai_icon = "🟢" if _ai_status == "Online" else "🟡" if _ai_status == "Fallback Mode" else "🔴"
+
+# Synthetic data banner
+try:
+    _synth_resp = requests.get(f"{API_URL}/threats?limit=1", timeout=3).json()
+    _has_synthetic = any(t.get("is_synthetic", False) for t in (_synth_resp if isinstance(_synth_resp, list) else []))
+except Exception:
+    _has_synthetic = False
+
+if _has_synthetic:
+    st.sidebar.warning("⚠ Synthetic demo data present in database.")
+
+st.sidebar.info(f"{_sys_icon} System Status: **{_sys_status}**\n\n{_ai_icon} AI Engine: **{_ai_status}**")
 
 def fetch_data(endpoint):
     try:
@@ -392,15 +426,22 @@ elif page == "Global Threat Map":
     threats = fetch_data("threats?limit=500")
     if threats:
         # ISO-2 to ISO-3 mapping for standard Plotly Choropleth
-        iso3_map = {"RU": "RUS", "CN": "CHN", "KP": "PRK", "IR": "IRN", "US": "USA", "BR": "BRA"}
         countries = []
+        
+        def _to_iso3(iso2_code: str) -> str | None:
+            """Convert ISO-2 country code to ISO-3 using pycountry."""
+            try:
+                return pycountry.countries.get(alpha_2=iso2_code).alpha_3
+            except (AttributeError, LookupError):
+                return None
         
         for t in threats:
             for i in t.get("extracted_indicators", []):
                 if i["type"] == "ip":
                     c = i.get("metadata", {}).get("country")
-                    if c and c in iso3_map:
-                        countries.append({"iso3": iso3_map[c], "threat": 1})
+                    iso3 = _to_iso3(c) if c else None
+                    if iso3:
+                        countries.append({"iso3": iso3, "threat": 1})
                         
         if countries:
             df_geo = pd.DataFrame(countries).groupby("iso3").sum().reset_index()
@@ -519,8 +560,9 @@ elif page == "Settings":
             st.subheader("Crawler Operations")
             crawl_freq = st.number_input("Crawl Interval (minutes)", value=yaml_config.get("crawler", {}).get("crawl_interval_minutes", 360))
             proxy_url = st.text_input("Tor Proxy URL", value=yaml_config.get("crawler", {}).get("proxy", "socks5://localhost:9050"))
-            enable_vpn = st.checkbox("Enable VPN Routing for Tor", value=yaml_config.get("crawler", {}).get("enable_vpn", True))
-            disable_js = st.checkbox("Disable JavaScript Execution (Tor Settings)", value=yaml_config.get("crawler", {}).get("disable_javascript", True))
+            circuit_interval = st.number_input("Tor Circuit Rotation Interval (requests)", value=yaml_config.get("crawler", {}).get("circuit_rotation_interval", 10), min_value=1)
+            js_threshold = st.number_input("JS Fallback Content Threshold (chars)", value=yaml_config.get("crawler", {}).get("js_content_threshold", 200), min_value=50)
+            triage_enabled = st.checkbox("Enable Autonomous AI Triage", value=yaml_config.get("triage", {}).get("enabled", False))
             
             st.subheader("Enrichment API Keys")
             abuseipdb = st.text_input("AbuseIPDB API Key (Optional)", type="password", value=yaml_config.get("apis", {}).get("abuseipdb", ""))
@@ -534,8 +576,9 @@ elif page == "Settings":
                 if "crawler" not in yaml_config: yaml_config["crawler"] = {}
                 yaml_config["crawler"]["crawl_interval_minutes"] = crawl_freq
                 yaml_config["crawler"]["proxy"] = proxy_url
-                yaml_config["crawler"]["enable_vpn"] = enable_vpn
-                yaml_config["crawler"]["disable_javascript"] = disable_js
+                yaml_config["crawler"]["circuit_rotation_interval"] = circuit_interval
+                yaml_config["crawler"]["js_content_threshold"] = js_threshold
+                yaml_config.setdefault("triage", {})["enabled"] = triage_enabled
                 
                 if "apis" not in yaml_config: yaml_config["apis"] = {}
                 yaml_config["apis"]["abuseipdb"] = abuseipdb
