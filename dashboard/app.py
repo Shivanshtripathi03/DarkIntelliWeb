@@ -14,7 +14,17 @@ import plotly.graph_objects as go
 from datetime import datetime
 import yaml
 
-API_URL = os.getenv("BACKEND_API_URL", "http://localhost:8000") + "/api"
+API_BASE_URL = os.getenv("BACKEND_API_URL", "http://localhost:8000")
+
+# Dynamic fallback to localhost if running outside Docker container network
+if "backend" in API_BASE_URL:
+    try:
+        import socket
+        socket.gethostbyname("backend")
+    except socket.gaierror:
+        API_BASE_URL = "http://localhost:8000"
+
+API_URL = API_BASE_URL + "/api"
 
 st.set_page_config(page_title="DarkIntelliWeb SOC", layout="wide", page_icon="terminal")
 
