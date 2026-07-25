@@ -37,6 +37,15 @@ class DarkWebCrawler:
                 logger.warning(f"Circuit rotation skipped: {e}")
 
     async def fetch(self, session, url):
+        # Bypass SOCKS request for offline simulated targets
+        try:
+            from crawler.crawl_hidden_wiki import SIMULATED_ONION_PAGES
+            if url in SIMULATED_ONION_PAGES:
+                logger.info(f"Bypassing proxy. Loading offline simulation content for: {url}")
+                return SIMULATED_ONION_PAGES[url]["html"]
+        except Exception as err:
+            logger.warning(f"Failed to check simulated pages: {err}")
+
         try:
             await self._maybe_rotate_circuit()
 
@@ -121,16 +130,26 @@ class DarkWebCrawler:
         if html:
             text = self.clean_html(html)
             
+            # Tag as synthetic if URL is in simulated dataset
+            is_synthetic = False
+            try:
+                from crawler.crawl_hidden_wiki import SIMULATED_ONION_PAGES
+                if url in SIMULATED_ONION_PAGES:
+                    is_synthetic = True
+            except Exception:
+                pass
+
             # Store in DB
             page_data = {
                 "url": url,
                 "html": html,
                 "text": text,
                 "timestamp": datetime.utcnow(),
-                "processed": False
+                "processed": False,
+                "is_synthetic": is_synthetic
             }
             await db.raw_pages.insert_one(page_data)
-            logger.info(f"Saved {url} to database")
+            logger.info(f"Saved {url} to database (Synthetic: {is_synthetic})")
 
             if depth < self.max_depth:
                 soup = BeautifulSoup(html, "html.parser")
