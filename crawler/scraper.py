@@ -49,13 +49,29 @@ class DarkWebCrawler:
         try:
             await self._maybe_rotate_circuit()
 
+            # Bypass SOCKS proxy for standard clearnet URLs to allow direct scraping
+            if ".onion" not in url:
+                logger.info(f"Clearnet URL detected. Fetching directly: {url}")
+                # Use a clean direct connection session
+                async with aiohttp.ClientSession() as direct_session:
+                    headers = {
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:109.0) Gecko/20100101 Firefox/115.0",
+                        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                    }
+                    async with direct_session.get(url, headers=headers, timeout=self.timeout) as response:
+                        if response.status == 200:
+                            return await response.text()
+                        else:
+                            logger.warning(f"Failed to fetch clearnet {url} directly - Status: {response.status}")
+                            return None
+
             headers = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:109.0) Gecko/20100101 Firefox/115.0",
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                 "Accept-Language": "en-US,en;q=0.5",
             }
 
-            logger.info(f"Fetching {url}")
+            logger.info(f"Fetching onion URL via Tor: {url}")
             async with session.get(url, headers=headers, timeout=self.timeout) as response:
                 if response.status == 200:
                     return await response.text()
