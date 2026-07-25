@@ -34,46 +34,33 @@ st.markdown("""
     /* Import modern clean fonts and hacker monospace fonts */
     @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
-    /* Premium Steel Blue Grid Scan Background (React Bits Inspired) */
+    /* Premium Steel Blue Grid Scan Background (Multiple Background Layer Style) */
     .stApp {
-        background-color: #050811 !important; /* Extremely deep dark navy/black */
+        background-color: #050811 !important;
         background-image: 
             linear-gradient(rgba(14, 165, 233, 0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px) !important;
-        background-size: 40px 40px !important;
-        position: relative;
-    }
-    
-    /* Animated Laser Scan line sweep */
-    .stApp::after {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-            to bottom,
-            rgba(14, 165, 233, 0) 0%,
-            rgba(14, 165, 233, 0) 10%,
-            rgba(14, 165, 233, 0.03) 50%,
-            rgba(14, 165, 233, 0.08) 51%,
-            rgba(14, 165, 233, 0.03) 52%,
-            rgba(14, 165, 233, 0) 90%,
-            rgba(14, 165, 233, 0) 100%
-        );
-        background-size: 100% 600px;
-        animation: gridScanAnimation 12s linear infinite;
-        z-index: -1;
-        pointer-events: none;
+            linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px),
+            linear-gradient(
+                to bottom,
+                rgba(14, 165, 233, 0) 0%,
+                rgba(14, 165, 233, 0) 10%,
+                rgba(14, 165, 233, 0.03) 50%,
+                rgba(14, 165, 233, 0.08) 51%,
+                rgba(14, 165, 233, 0.03) 52%,
+                rgba(14, 165, 233, 0) 90%,
+                rgba(14, 165, 233, 0) 100%
+            ) !important;
+        background-size: 40px 40px, 40px 40px, 100% 600px !important;
+        background-repeat: repeat, repeat, repeat-x !important;
+        animation: gridScanAnimation 12s linear infinite !important;
     }
 
     @keyframes gridScanAnimation {
         0% {
-            background-position: 0 -600px;
+            background-position: 0 0, 0 0, 0 -600px;
         }
         100% {
-            background-position: 0 600px;
+            background-position: 0 0, 0 0, 0 600px;
         }
     }
     
