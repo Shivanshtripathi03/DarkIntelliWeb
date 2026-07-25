@@ -347,13 +347,15 @@ elif page == "Threat Intelligence Graph":
     st.markdown("Interactive node-link visualization mapping the relationships between sources, threat actors, and indicators.")
     
     data = fetch_data("graph")
-    if data and "nodes" in data and "links" in data:
+    # NetworkX 3.x uses 'edges' instead of 'links' in node_link_data
+    edges_key = "edges" if "edges" in (data or {}) else "links"
+    if data and "nodes" in data and edges_key in data:
         nodes_df = pd.DataFrame(data["nodes"])
         
         col1, col2 = st.columns([1, 4])
         with col1:
             st.metric("Total Nodes", len(data["nodes"]))
-            st.metric("Total Connections", len(data["links"]))
+            st.metric("Total Connections", len(data[edges_key]))
             st.markdown("### Node Legend")
             st.markdown("<span style='color:#ef4444'>●</span> **URL (Source)**", unsafe_allow_html=True)
             st.markdown("<span style='color:#a78bfa'>●</span> **Threat Category**", unsafe_allow_html=True)
@@ -361,6 +363,9 @@ elif page == "Threat Intelligence Graph":
             
         with col2:
             with st.spinner("Rendering Graph Topology..."):
+                # Normalize key for nx.node_link_graph (expects 'edges' in nx 3.x)
+                if "links" in data and "edges" not in data:
+                    data["edges"] = data.pop("links")
                 G = nx.node_link_graph(data)
                 # Ensure predictable visual layout
                 pos = nx.spring_layout(G, k=0.15, iterations=20, seed=42)

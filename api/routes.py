@@ -74,8 +74,14 @@ async def remove_target(body: dict):
         save_targets(targets)
     return {"status": "ok", "targets": targets}
 
+import asyncio
+from scheduler.tasks import _async_crawling_pipeline
+
 @router.post("/scan")
 async def trigger_scan():
-    run_crawling_pipeline.delay()
-    return {"status": "ok", "message": "Scan triggered"}
+    try:
+        run_crawling_pipeline.delay()
+    except Exception:
+        asyncio.create_task(_async_crawling_pipeline())
+    return {"status": "ok", "message": "Scan initiated"}
 

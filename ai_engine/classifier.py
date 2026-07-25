@@ -1,4 +1,3 @@
-from transformers import pipeline
 from config.loader import load_config
 from config.logger import setup_logger
 
@@ -22,6 +21,7 @@ def get_classifier():
     if _classifier is None:
         logger.info("Loading Zero-Shot Classification Model...")
         try:
+            from transformers import pipeline
             # Setting device=-1 forces CPU which avoids some CUDA initialization issues in docker
             _classifier = pipeline("zero-shot-classification", model="valhalla/distilbart-mnli-12-3", device=-1)
             logger.info("Model loaded successfully.")
