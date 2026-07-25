@@ -33,10 +33,15 @@ def load_config() -> dict:
 def load_targets() -> list:
     if TARGETS_PATH.exists():
         with open(TARGETS_PATH, "r") as f:
-            data = json.load(f)
-            return data.get("targets", [])
+            try:
+                data = json.load(f)
+                if isinstance(data, list):
+                    return data
+                return data.get("targets", [])
+            except json.JSONDecodeError:
+                return []
     return []
 
 def save_targets(targets: list):
     with open(TARGETS_PATH, "w") as f:
-        json.dump({"targets": targets}, f, indent=2)
+        json.dump(targets, f, indent=2)
