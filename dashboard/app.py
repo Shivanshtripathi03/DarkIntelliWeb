@@ -31,94 +31,143 @@ st.set_page_config(page_title="DarkIntelliWeb SOC", layout="wide", page_icon="te
 # Custom CSS for Cybersecurity Theme
 st.markdown("""
 <style>
-    /* Professional Enterprise SOC Theme Tweaks */
-    .stMetric {
-        background-color: #0f172a; /* Slate-900 */
-        padding: 15px;
-        border-radius: 6px;
-        border-left: 4px solid #3b82f6; /* Blue-500 accent */
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    /* Premium Cybersecurity Dark Dot Matrix Grid Background */
+    .stApp {
+        background-color: #020617 !important;
+        background-image: radial-gradient(rgba(30, 41, 59, 0.5) 1.5px, transparent 1.5px) !important;
+        background-size: 24px 24px !important;
     }
+    
+    /* Custom Webkit Scrollbars */
+    ::-webkit-scrollbar {
+        width: 8px !important;
+        height: 8px !important;
+    }
+    ::-webkit-scrollbar-track {
+        background: #020617 !important;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #1e293b !important;
+        border-radius: 4px !important;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #8b5cf6 !important;
+    }
+
+    /* Glassmorphism Metric Cards & Lift-on-hover */
+    .stMetric {
+        background: rgba(15, 23, 42, 0.65) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(51, 65, 85, 0.4) !important;
+        border-left: 4px solid #3b82f6 !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    .stMetric:hover {
+        transform: translateY(-3px) !important;
+        border-color: rgba(139, 92, 246, 0.6) !important;
+        border-left-color: #8b5cf6 !important;
+        box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.3), 0 4px 8px -2px rgba(0, 0, 0, 0.05), 0 0 20px rgba(139, 92, 246, 0.2) !important;
+    }
+    
     .css-1d391kg, .css-1v3fvcr {
-        background-color: #020617; /* Slate-950 */
+        background-color: #020617;
     }
     h1, h2, h3, h4, p, label, .stMarkdown {
-        font-family: 'Inter', 'Roboto', sans-serif !important;
+        font-family: 'Outfit', 'Inter', 'Roboto', sans-serif !important;
     }
     h1 {
-        color: #f8fafc !important; /* Slate-50 */
-        font-weight: 600;
+        color: #f8fafc !important;
+        font-weight: 700;
         letter-spacing: -0.025em;
     }
     h2, h3 {
-        color: #e2e8f0 !important; /* Slate-200 */
-        font-weight: 500;
+        color: #f1f5f9 !important;
+        font-weight: 600;
     }
-    /* Hide Streamlit header anchor links that appear on hover */
+    
+    /* Hide Streamlit header anchor links */
     a.anchor { display: none !important; }
     h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { display: none !important; }
     
-    /* Clean Expanders */
+    /* Glassmorphism Expanders */
     .streamlit-expanderHeader {
-        background-color: #1e293b !important; /* Slate-800 */
-        border: 1px solid #334155; /* Slate-700 */
-        border-radius: 4px;
-        color: #cbd5e1 !important; /* Slate-300 */
+        background-color: rgba(15, 23, 42, 0.7) !important;
+        backdrop-filter: blur(8px) !important;
+        border: 1px solid rgba(51, 65, 85, 0.5) !important;
+        border-radius: 6px !important;
+        color: #f1f5f9 !important;
+        transition: all 0.2s ease !important;
     }
     .streamlit-expanderHeader:hover {
-        background-color: #334155 !important;
-        color: #f8fafc !important;
+        background-color: rgba(30, 41, 59, 0.8) !important;
+        border-color: #3b82f6 !important;
     }
     .stDataFrame {
-        border: 1px solid #334155;
-        border-radius: 4px;
+        border: 1px solid rgba(51, 65, 85, 0.5);
+        border-radius: 6px;
+        background-color: rgba(15, 23, 42, 0.65) !important;
     }
+    
     /* Modern Creative Sidebar Navigation */
     section[data-testid="stSidebar"] {
         background-color: #020617;
-        border-right: 1px solid #1e293b;
+        border-right: 1px solid rgba(30, 41, 59, 0.8);
     }
-    /* Hide the master 'Navigation' label entirely */
     section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] {
         display: none !important;
     }
     section[data-testid="stSidebar"] [data-testid="stRadio"] > div {
         gap: 0.5rem;
     }
-    /* Target ONLY the options, not the master label */
+    
+    /* Custom Styling for Sidebar Radio Tab Options */
     section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] label {
         padding: 0.75rem 1rem !important;
         border-radius: 0.5rem !important;
-        background-color: #0f172a !important;
-        border: 1px solid #1e293b !important;
+        background-color: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid rgba(30, 41, 59, 0.8) !important;
         cursor: pointer !important;
-        transition: all 0.2s ease !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
         width: 100% !important;
         display: flex !important;
         align-items: center !important;
         box-sizing: border-box !important;
     }
     section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] label:hover {
-        background-color: #1e293b !important;
-        border-color: #3b82f6 !important;
+        background-color: rgba(30, 41, 59, 0.6) !important;
+        border-color: rgba(59, 130, 246, 0.5) !important;
         transform: translateX(4px) !important;
     }
-    /* Hide the radio circle dots to look like clean tabs */
+    
+    /* Glowing active state for Sidebar items (inspired by React Bits Spotlight) */
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked),
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label[data-checked="true"] {
+        background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(49, 16, 66, 0.8) 100%) !important;
+        border-color: #8b5cf6 !important;
+        box-shadow: inset 0 0 10px rgba(139, 92, 246, 0.15), 0 0 15px rgba(139, 92, 246, 0.2) !important;
+    }
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) p,
+    section[data-testid="stSidebar"] [data-testid="stRadio"] label[data-checked="true"] p {
+        color: #a78bfa !important;
+        font-weight: 600 !important;
+    }
+    
+    /* Hide the default radio circle elements */
     section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radio"] {
         display: none !important;
     }
-    /* Hide the native radio svg/div circles in newer streamlit versions */
     section[data-testid="stSidebar"] [data-testid="stRadio"] div[data-baseweb="radio"] > div:first-child {
         display: none !important;
     }
-    /* Make text fill the space evenly */
     section[data-testid="stSidebar"] [data-testid="stRadio"] div[data-testid="stMarkdownContainer"] {
         width: 100% !important;
     }
-    /* Style the text inside the radio tab */
     section[data-testid="stSidebar"] [data-testid="stRadio"] p {
         font-weight: 500 !important;
-        color: #e2e8f0 !important;
+        color: #94a3b8 !important;
         margin: 0 !important;
         text-align: left !important;
     }
@@ -192,6 +241,22 @@ if page == "Threat Overview":
     st.title("Threat Overview Dashboard")
     st.markdown("Real-time telemetry and cyber intelligence analysis from monitored Dark Web sources.")
     
+    # AI Executive Threat Summary Card
+    ai_summary = fetch_data("ai-summary")
+    if ai_summary and "summary" in ai_summary:
+        st.markdown(
+            f"""
+            <div style="background-color: #0f172a; border: 1px solid #1e293b; border-left: 4px solid #8b5cf6; padding: 20px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <span style="background-color: #8b5cf6; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-right: 10px; text-transform: uppercase; letter-spacing: 0.05em;">AI Executive Insight</span>
+                    <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 500;">Lead CISO Analyst Report</span>
+                </div>
+                <div style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap;">{ai_summary["summary"]}</div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
     data = fetch_data("overview")
     threats = fetch_data("threats?limit=500") or []
     df_threats = pd.DataFrame(threats) if threats else pd.DataFrame()
