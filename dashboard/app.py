@@ -34,13 +34,47 @@ st.markdown("""
     /* Import modern clean fonts and hacker monospace fonts */
     @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
-    /* Premium Steel Blue Dark Cyber Background (No Neon Glows) */
+    /* Premium Steel Blue Grid Scan Background (React Bits Inspired) */
     .stApp {
-        background-color: #0b0f19 !important; /* Deep Slate Blue */
+        background-color: #050811 !important; /* Extremely deep dark navy/black */
         background-image: 
-            linear-gradient(rgba(51, 65, 85, 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(51, 65, 85, 0.05) 1px, transparent 1px) !important;
-        background-size: 30px 30px !important;
+            linear-gradient(rgba(14, 165, 233, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(14, 165, 233, 0.04) 1px, transparent 1px) !important;
+        background-size: 40px 40px !important;
+        position: relative;
+    }
+    
+    /* Animated Laser Scan line sweep */
+    .stApp::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            to bottom,
+            rgba(14, 165, 233, 0) 0%,
+            rgba(14, 165, 233, 0) 10%,
+            rgba(14, 165, 233, 0.03) 50%,
+            rgba(14, 165, 233, 0.08) 51%,
+            rgba(14, 165, 233, 0.03) 52%,
+            rgba(14, 165, 233, 0) 90%,
+            rgba(14, 165, 233, 0) 100%
+        );
+        background-size: 100% 600px;
+        animation: gridScanAnimation 12s linear infinite;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    @keyframes gridScanAnimation {
+        0% {
+            background-position: 0 -600px;
+        }
+        100% {
+            background-position: 0 600px;
+        }
     }
     
     /* Fine Webkit Scrollbar */
