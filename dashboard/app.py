@@ -34,14 +34,13 @@ st.markdown("""
     /* Import modern clean fonts and hacker monospace fonts */
     @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
-    /* Premium Dark Web Matrix Grid Background with subtle glowing aura */
+    /* Premium Steel Blue Dark Cyber Background (No Neon Glows) */
     .stApp {
-        background-color: #030712 !important;
+        background-color: #0b0f19 !important; /* Deep Slate Blue */
         background-image: 
-            linear-gradient(rgba(16, 185, 129, 0.02) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(16, 185, 129, 0.02) 1px, transparent 1px),
-            radial-gradient(circle at 50% 10%, rgba(16, 185, 129, 0.06) 0%, transparent 60%) !important;
-        background-size: 24px 24px, 24px 24px, 100% 100% !important;
+            linear-gradient(rgba(51, 65, 85, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(51, 65, 85, 0.05) 1px, transparent 1px) !important;
+        background-size: 30px 30px !important;
     }
     
     /* Fine Webkit Scrollbar */
@@ -50,61 +49,66 @@ st.markdown("""
         height: 8px !important;
     }
     ::-webkit-scrollbar-track {
-        background: #030712 !important;
+        background: #0b0f19 !important;
     }
     ::-webkit-scrollbar-thumb {
-        background: #111827 !important;
-        border: 1px solid rgba(16, 185, 129, 0.2) !important;
+        background: #1e293b !important;
         border-radius: 4px !important;
     }
     ::-webkit-scrollbar-thumb:hover {
-        background: #10b981 !important;
+        background: #0ea5e9 !important;
     }
 
-    /* Cyber Metric Cards (High Contrast Glassmorphism) */
+    /* Muted Metric Cards (High Contrast Glassmorphism) */
     .stMetric {
-        background: rgba(3, 7, 18, 0.85) !important;
+        background: rgba(15, 23, 42, 0.8) !important;
         backdrop-filter: blur(16px) !important;
         -webkit-backdrop-filter: blur(16px) !important;
-        border: 1px solid rgba(16, 185, 129, 0.25) !important;
-        border-left: 4px solid #10b981 !important;
+        border: 1px solid rgba(51, 65, 85, 0.5) !important;
+        border-left: 4px solid #3b82f6 !important;
         border-radius: 8px !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+        transition: all 0.2s ease !important;
     }
     .stMetric:hover {
-        transform: translateY(-2px) !important;
-        border-color: #10b981 !important;
-        box-shadow: 0 0 15px rgba(16, 185, 129, 0.25) !important;
+        border-color: rgba(14, 165, 233, 0.5) !important;
+        border-left-color: #0ea5e9 !important;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3) !important;
     }
     
     /* Metric Value Font Selection (Monospace style value for authenticity) */
     [data-testid="stMetricValue"] {
         font-family: 'JetBrains Mono', monospace !important;
-        color: #10b981 !important;
+        color: #38bdf8 !important; /* Soft sky blue */
         font-weight: 700 !important;
     }
     
     .css-1d391kg, .css-1v3fvcr {
-        background-color: #030712;
+        background-color: #0b0f19;
     }
     
-    /* High Readability Typography Hierarchy */
-    h1, h2, h3, h4, .streamlit-expanderHeader {
+    /* High Readability Typography Hierarchy (Fixed Icon Font Overrides) */
+    h1, h2, h3, h4 {
         font-family: 'Share Tech Mono', 'Outfit', sans-serif !important;
         text-transform: uppercase !important;
         letter-spacing: 0.05em !important;
     }
-    p, label, span, .stMarkdown, td, th {
+    
+    /* Target only markdown text elements to preserve Streamlit's internal Material Icon fonts */
+    [data-testid="stMarkdownContainer"] p,
+    [data-testid="stMarkdownContainer"] span,
+    [data-testid="stWidgetLabel"] p,
+    [data-testid="stWidgetLabel"] span,
+    label, td, th {
         font-family: 'Inter', 'Roboto', sans-serif !important;
         font-size: 0.95rem !important;
-        color: #94a3b8 !important; /* Slate-400 (very clear contrast on black) */
+        color: #94a3b8 !important; /* High contrast text color */
     }
     
     h1 {
         color: #f8fafc !important;
         font-weight: 700;
-        border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+        border-bottom: 1px solid rgba(51, 65, 85, 0.4);
         padding-bottom: 10px;
     }
     h2, h3 {
@@ -117,10 +121,10 @@ st.markdown("""
     a.anchor { display: none !important; }
     h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { display: none !important; }
     
-    /* Cyber Expanders (Monospace logs style) */
+    /* Muted Expanders */
     .streamlit-expanderHeader {
-        background-color: rgba(3, 7, 18, 0.8) !important;
-        border: 1px solid rgba(16, 185, 129, 0.2) !important;
+        background-color: rgba(15, 23, 42, 0.8) !important;
+        border: 1px solid rgba(51, 65, 85, 0.5) !important;
         border-radius: 6px !important;
         color: #e2e8f0 !important;
         font-family: 'Share Tech Mono', monospace !important;
@@ -128,19 +132,19 @@ st.markdown("""
         transition: all 0.2s ease !important;
     }
     .streamlit-expanderHeader:hover {
-        background-color: rgba(16, 185, 129, 0.1) !important;
-        border-color: #10b981 !important;
+        background-color: rgba(30, 41, 59, 0.8) !important;
+        border-color: #3b82f6 !important;
     }
     .stDataFrame {
-        border: 1px solid rgba(16, 185, 129, 0.2);
+        border: 1px solid rgba(51, 65, 85, 0.5);
         border-radius: 6px;
-        background-color: rgba(3, 7, 18, 0.85) !important;
+        background-color: rgba(15, 23, 42, 0.8) !important;
     }
     
     /* Modern Creative Sidebar Navigation */
     section[data-testid="stSidebar"] {
-        background-color: #02040a;
-        border-right: 1px solid rgba(16, 185, 129, 0.15);
+        background-color: #070a12;
+        border-right: 1px solid rgba(51, 65, 85, 0.4);
     }
     section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] {
         display: none !important;
@@ -153,31 +157,31 @@ st.markdown("""
     section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] label {
         padding: 0.75rem 1rem !important;
         border-radius: 0.5rem !important;
-        background-color: rgba(3, 7, 18, 0.7) !important;
-        border: 1px solid rgba(16, 185, 129, 0.15) !important;
+        background-color: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid rgba(51, 65, 85, 0.4) !important;
         cursor: pointer !important;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        transition: all 0.2s ease !important;
         width: 100% !important;
         display: flex !important;
         align-items: center !important;
         box-sizing: border-box !important;
     }
     section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] label:hover {
-        background-color: rgba(16, 185, 129, 0.05) !important;
-        border-color: rgba(16, 185, 129, 0.4) !important;
+        background-color: rgba(30, 41, 59, 0.6) !important;
+        border-color: rgba(14, 165, 233, 0.5) !important;
         transform: translateX(4px) !important;
     }
     
-    /* Glowing active state for Sidebar items (inspired by Terminal Selected elements) */
+    /* Steel Blue/Slate active state for Sidebar items */
     section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked),
     section[data-testid="stSidebar"] [data-testid="stRadio"] label[data-checked="true"] {
-        background: linear-gradient(135deg, rgba(6, 78, 59, 0.5) 0%, rgba(2, 44, 34, 0.7) 100%) !important;
-        border-color: #10b981 !important;
-        box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.15), 0 0 15px rgba(16, 185, 129, 0.15) !important;
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%) !important;
+        border-color: #0ea5e9 !important;
+        box-shadow: inset 0 0 10px rgba(14, 165, 233, 0.1), 0 0 15px rgba(14, 165, 233, 0.1) !important;
     }
     section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) p,
     section[data-testid="stSidebar"] [data-testid="stRadio"] label[data-checked="true"] p {
-        color: #10b981 !important;
+        color: #38bdf8 !important;
         font-weight: 600 !important;
     }
     
@@ -272,12 +276,12 @@ if page == "Threat Overview":
     if ai_summary and "summary" in ai_summary:
         st.markdown(
             f"""
-            <div style="background-color: rgba(3, 7, 18, 0.85); border: 1px solid rgba(16, 185, 129, 0.25); border-left: 4px solid #10b981; padding: 20px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.45); backdrop-filter: blur(16px);">
+            <div style="background-color: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.2); border-left: 4px solid #0284c7; padding: 20px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); backdrop-filter: blur(12px);">
                 <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <span style="background-color: #10b981; color: #02040a; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-right: 10px; text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Share Tech Mono', monospace;">AI Executive Insight</span>
+                    <span style="background-color: #0284c7; color: #f8fafc; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-right: 10px; text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Share Tech Mono', monospace;">AI Executive Insight</span>
                     <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 500; font-family: 'Share Tech Mono', monospace;">Lead CISO Analyst Report</span>
                 </div>
-                <div style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; font-family: 'Inter', sans-serif;">{ai_summary["summary"]}</div>
+                <div style="color: #e2e8f0; font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; font-family: 'Inter', sans-serif;">{ai_summary["summary"]}</div>
             </div>
             """,
             unsafe_allow_html=True
