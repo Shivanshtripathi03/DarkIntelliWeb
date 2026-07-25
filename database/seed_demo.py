@@ -7,17 +7,17 @@ logger = setup_logger("seed_demo")
 
 SAMPLE_THREATS = [
     {
-        "url": "http://lockbit37462x7z8a.onion/leaks/corp_vault_2026",
+        "url": "http://aetherlock37462x7z8apqrs234567abcdefghijklmnopqr234567ab.onion/leaks/corp_vault_2026",
         "timestamp": datetime.utcnow() - timedelta(hours=2),
         "risk_score": 92,
         "threat_category": "ransomware activity",
         "confidence": 0.94,
         "is_synthetic": True,
-        "content_snippet": "LockBit 3.0 Leak Site: Exfiltrated 450GB internal SQL database dumps, finance records, and private keys. Target company failed negotiation window.",
+        "content_snippet": "AetherLocker Leak Site: Exfiltrated 450GB internal SQL database dumps, finance records, and private keys. Target company failed negotiation window.",
         "extracted_indicators": [
             {"type": "ip", "value": "185.220.101.5", "metadata": {"country": "RU", "malware_detection_count": 8, "reputation_score": 85}},
             {"type": "crypto_wallet", "value": "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh", "metadata": {"enriched": True}},
-            {"type": "hash", "value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "metadata": {"malware_detection_count": 14, "reputation_score": 90}}
+            {"type": "hash", "value": "f82d2c18ba6a48911017c592a47ae41e4649b934ca495991b7852b855e4298fc", "metadata": {"malware_detection_count": 14, "reputation_score": 90}}
         ],
         "triage": {
             "action": "escalate",
@@ -26,7 +26,7 @@ SAMPLE_THREATS = [
         }
     },
     {
-        "url": "http://carderhub998xa7z.onion/market/cvv-dumps",
+        "url": "http://novacarders998xa7zpqrs234567abcdefghijklmnopqr234567abcd.onion/market/cvv-dumps",
         "timestamp": datetime.utcnow() - timedelta(hours=5),
         "risk_score": 81,
         "threat_category": "carding marketplaces",
@@ -35,8 +35,8 @@ SAMPLE_THREATS = [
         "content_snippet": "Fresh US/EU Visa & MasterCard dumps with PIN. Fullz included. Auto-checker enabled. Bulk discount available for crypto.",
         "extracted_indicators": [
             {"type": "ip", "value": "194.26.29.110", "metadata": {"country": "CN", "malware_detection_count": 5, "reputation_score": 70}},
-            {"type": "email", "value": "admin@carderhub.onion", "metadata": {"enriched": True}},
-            {"type": "domain", "value": "carderhub-checkout.com", "metadata": {"malware_detection_count": 3, "reputation_score": 60}}
+            {"type": "email", "value": "admin@novacarders.onion", "metadata": {"enriched": True}},
+            {"type": "domain", "value": "novacarders-checkout.com", "metadata": {"malware_detection_count": 3, "reputation_score": 60}}
         ],
         "triage": {
             "action": "escalate",
@@ -45,7 +45,7 @@ SAMPLE_THREATS = [
         }
     },
     {
-        "url": "http://breachforums827z.onion/thread-29401",
+        "url": "http://aetherleak272zpqrs234567abcdefghijklmnopqr234567abcdefgh.onion/thread-29401",
         "timestamp": datetime.utcnow() - timedelta(hours=8),
         "risk_score": 88,
         "threat_category": "data breaches",
@@ -64,7 +64,7 @@ SAMPLE_THREATS = [
         }
     },
     {
-        "url": "http://zero-day-bazaar.onion/exploits/ios-kernel-rce",
+        "url": "http://vortexexploit27zpqrs234567abcdefghijklmnopqr234567abcdef.onion/exploits/ios-kernel-rce",
         "timestamp": datetime.utcnow() - timedelta(hours=12),
         "risk_score": 76,
         "threat_category": "exploit trading",
@@ -73,7 +73,7 @@ SAMPLE_THREATS = [
         "content_snippet": "Unpatched zero-day remote code execution vulnerability chain for modern webkit/kernel. Proof of concept available upon proof of funds.",
         "extracted_indicators": [
             {"type": "ip", "value": "193.106.191.22", "metadata": {"country": "US", "malware_detection_count": 2, "reputation_score": 40}},
-            {"type": "hash", "value": "5d41402abc4b2a76b9719d911017c592", "metadata": {"malware_detection_count": 7, "reputation_score": 75}}
+            {"type": "hash", "value": "a294017c5925d41402abc4b2a76b9719", "metadata": {"malware_detection_count": 7, "reputation_score": 75}}
         ],
         "triage": {
             "action": "monitor",
@@ -82,7 +82,7 @@ SAMPLE_THREATS = [
         }
     },
     {
-        "url": "http://darknet-botnet-panel.onion/dashboard",
+        "url": "http://nexusbotnet7zpqrs234567abcdefghijklmnopqr234567abcdefghi.onion/dashboard",
         "timestamp": datetime.utcnow() - timedelta(hours=18),
         "risk_score": 68,
         "threat_category": "botnet services",
@@ -115,7 +115,8 @@ async def seed():
                     "timestamp": t["timestamp"],
                     "level": "CRITICAL",
                     "message": f"High risk threat detected at {t['url']}: {t['threat_category']} with score {t['risk_score']}",
-                    "read": False
+                    "read": False,
+                    "is_synthetic": True
                 }
                 await db.alerts.insert_one(alert)
         logger.info("Database successfully seeded with demo telemetry.")

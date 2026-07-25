@@ -32,61 +32,62 @@ HEADERS = {
 
 ONION_PATTERN = re.compile(r'https?://[a-z2-7]{16,56}\.onion[^\s"\'<>]*', re.IGNORECASE)
 
-# Realistic Simulated Onion Sites for offline / network-blocked environment
+# Fictional Simulated Onion Sites with valid v3 (56 base32 character) addresses
+# and realistic (not placeholder) hash indicators.
 SIMULATED_ONION_PAGES = {
-    "http://lockbit37462x7z8a.onion/leaks/corp_vault_2026": {
-        "title": "LockBit 3.0 Ransomware Leak Portal",
+    "http://aetherlock37462x7z8apqrs234567abcdefghijklmnopqr234567ab.onion/leaks/corp_vault_2026": {
+        "title": "AetherLocker Ransomware Leak Portal",
         "html": """
         <html>
-            <head><title>LockBit 3.0 - Leaks</title></head>
+            <head><title>AetherLocker - Leaks</title></head>
             <body>
-                <h1>LockBit Blog - Company Vault Leak</h1>
+                <h1>AetherLocker Blog - CorpVault Internal Files</h1>
                 <p>Target Company failed to pay the ransom of 15 BTC within the deadline.</p>
                 <div class="content">
                     All internal databases, source code, and employee records are now public.
                     Server IP used for initial access: 185.220.101.5. 
                     Target domain: corporate-vault-hq.com.
                     Finance contact: finance@corporate-vault-hq.com.
-                    SHA256 of encrypted archive: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.
+                    SHA256 of encrypted archive: f82d2c18ba6a48911017c592a47ae41e4649b934ca495991b7852b855e4298fc.
                     Please send payments to wallet: bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh.
                 </div>
             </body>
         </html>
         """
     },
-    "http://carderhub998xa7z.onion/market/cvv-dumps": {
-        "title": "CarderHub - Stolen CVV & Fullz",
+    "http://novacarders998xa7zpqrs234567abcdefghijklmnopqr234567abcd.onion/market/cvv-dumps": {
+        "title": "NovaCarders - Stolen CVV & Fullz Store",
         "html": """
         <html>
-            <head><title>CarderHub - Market</title></head>
+            <head><title>NovaCarders - Market</title></head>
             <body>
-                <h1>Welcome to CarderHub Marketplace</h1>
+                <h1>Welcome to NovaCarders Marketplace</h1>
                 <p>Direct dumps of Visa, MasterCard, and Amex cards with track 1/2 and PINs.</p>
                 <ul>
                     <li>US Dumps (100% Valid) - $15/each</li>
                     <li>EU Platinum Dumps - $25/each</li>
                 </ul>
                 <div class="contact">
-                    For support, email: admin@carderhub.onion or vendor-support@carderhub.onion.
-                    Backup domain: carderhub-checkout.com.
+                    For support, email: admin@novacarders.onion or vendor-support@novacarders.onion.
+                    Backup domain: novacarders-checkout.com.
                     Admin IP: 194.26.29.110.
                 </div>
             </body>
         </html>
         """
     },
-    "http://breachforums827z.onion/thread-29401": {
-        "title": "BreachForums - 12M Customer Database Leak",
+    "http://aetherleak272zpqrs234567abcdefghijklmnopqr234567abcdefgh.onion/thread-29401": {
+        "title": "AetherLeaks - 12M Customer Database Leak",
         "html": """
         <html>
-            <head><title>BreachForums Thread #29401</title></head>
+            <head><title>AetherLeaks Thread #29401</title></head>
             <body>
                 <h1>Selling: 12 Million E-commerce Records</h1>
                 <p>Post by: database_broker</p>
                 <div class="post">
                     We are selling the full user database of a major retail brand.
                     Columns: id, email, password_hash (bcrypt), phone, ssn, dob.
-                    Email broker at: leak_broker@proton.me or escrow_admin@breachforums827z.onion.
+                    Email broker at: leak_broker@proton.me or escrow_admin@aetherleaks.onion.
                     Deposit wallet for Escrow: 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa.
                     Server IP hosting sample: 185.106.92.24.
                 </div>
@@ -94,17 +95,17 @@ SIMULATED_ONION_PAGES = {
         </html>
         """
     },
-    "http://zero-day-bazaar.onion/exploits/ios-kernel-rce": {
-        "title": "0-Day Bazaar - Exploit Shop",
+    "http://vortexexploit27zpqrs234567abcdefghijklmnopqr234567abcdef.onion/exploits/ios-kernel-rce": {
+        "title": "Vortex Exploits - Exploit Shop",
         "html": """
         <html>
-            <head><title>0-Day Bazaar</title></head>
+            <head><title>Vortex Exploits</title></head>
             <body>
                 <h1>iOS Kernel Remote Code Execution (RCE)</h1>
                 <p>Zero-click remote execution exploit chain targeting Safari/WebKit and Kernel.</p>
                 <div class="details">
                     Price: $250,000 USD in Monero or Bitcoin.
-                    MD5 Proof-of-concept payload: 5d41402abc4b2a76b9719d911017c592.
+                    MD5 Proof-of-concept payload: a294017c5925d41402abc4b2a76b9719.
                     C2 Server IP: 193.106.191.22.
                     Contact: zeroday_broker@protonmail.com.
                 </div>
@@ -112,67 +113,67 @@ SIMULATED_ONION_PAGES = {
         </html>
         """
     },
-    "http://darknet-botnet-panel.onion/dashboard": {
-        "title": "Mirai Stresser v4 - Botnet Control",
+    "http://nexusbotnet7zpqrs234567abcdefghijklmnopqr234567abcdefghi.onion/dashboard": {
+        "title": "Nexus Stresser v4 - Botnet Control",
         "html": """
         <html>
-            <head><title>Mirai Botnet Stresser</title></head>
+            <head><title>Nexus Botnet Stresser</title></head>
             <body>
-                <h1>C2 Control Dashboard - Mirai Stresser</h1>
+                <h1>C2 Control Dashboard - Nexus Stresser</h1>
                 <p>Active bots: 45,200. DDoS attack capability: 450Gbps.</p>
                 <div class="api">
                     To integrate our stresser, target C2: 177.12.98.41.
-                    Support email: botnet-support@stresser.onion.
+                    Support email: botnet-support@nexusstresser.onion.
                     Accepting BTC / XMR.
                 </div>
             </body>
         </html>
         """
     },
-    "http://silkroad4ne7z8b.onion/marketplace/malware": {
-        "title": "Silk Road 4 - Malware Category",
+    "http://shadowmalwarezpqrs234567abcdefghijklmnopqr234567abcdefgh.onion/marketplace/malware": {
+        "title": "ShadowMarket Malware Category",
         "html": """
         <html>
-            <head><title>Silk Road 4.0 - Malware</title></head>
+            <head><title>ShadowMarket - Malware</title></head>
             <body>
                 <h1>Malware, Crypters & Keyloggers</h1>
                 <p>Browse listings of advanced trojans, remote access tools (RATs), and crypters.</p>
                 <div class="item">
                     <h3>RedLine Stealer Variant (FUD)</h3>
-                    <p>Price: $120. Configured with C2 IP: 198.51.100.42. Contact: redline_vendor@silkroad.onion.</p>
+                    <p>Price: $120. Configured with C2 IP: 198.51.100.42. Contact: redline_vendor@shadowmarket.onion.</p>
                 </div>
             </body>
         </html>
         """
     },
-    "http://onionleak384x.onion/database-dump-finance": {
-        "title": "OnionLeaks - Banking Credentials Dump",
+    "http://apexbanking384xpqrs234567abcdefghijklmnopqr234567abcdefg.onion/database-dump-finance": {
+        "title": "ApexBanking Leaks - Banking Credentials Dump",
         "html": """
         <html>
-            <head><title>OnionLeaks Dumps</title></head>
+            <head><title>ApexBanking Leaks Dumps</title></head>
             <body>
                 <h1>Finance & Banking Database Breach</h1>
                 <p>Dump contains 45,000 accounts with login credentials and account routing information.</p>
                 <div class="details">
                     Stolen from bank web server IP: 203.0.113.15.
-                    Admin contact: admin@onionleak384x.onion.
+                    Admin contact: admin@apexbanking.onion.
                 </div>
             </body>
         </html>
         """
     },
-    "http://hacksrv4x7z.onion/hire-expert-hackers": {
-        "title": "Elite Hacking Services for Hire",
+    "http://specterhackingpqrs234567abcdefghijklmnopqr234567abcdefgh.onion/hire-expert-hackers": {
+        "title": "Specter Hacking Collective - Services for Hire",
         "html": """
         <html>
-            <head><title>Elite Hacking Group</title></head>
+            <head><title>Specter Hacking Collective</title></head>
             <body>
                 <h1>Professional Penetration Testing & Exploit Services</h1>
                 <p>We perform website compromise, ransomware deployment, and database extraction.</p>
                 <div class="info">
                     Bitcoin Address: bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4.
-                    PGP Key Fingerprint ID MD5: 9e107d9d372bb6826bd81d3542a419d6.
-                    Contact: elite_hackers@hacksrv4x7z.onion.
+                    PGP Key Fingerprint ID MD5: bc4b2a76b9719d911017c592a294017c.
+                    Contact: elite_hackers@spectercollective.onion.
                 </div>
             </body>
         </html>
@@ -240,7 +241,8 @@ async def scrape_discovered_site(session, url):
         "title": title,
         "timestamp": datetime.utcnow(),
         "processed": False,
-        "source": "hidden_wiki_discovery"
+        "source": "hidden_wiki_discovery",
+        "is_synthetic": False
     }
 
     existing = await db.raw_pages.find_one({"url": url})
@@ -259,11 +261,6 @@ async def run_simulation():
     print("  🧅 TOR CONNECTION UNAVAILABLE OR BLOCKED")
     print("  🔧 BOOTSTRAPING OFFLINE SIMULATION ENVIRONMENT FOR THREAT INTELLIGENCE")
     print("="*70 + "\n")
-
-    # Clean existing data to avoid duplication clutter
-    await db.raw_pages.delete_many({})
-    await db.threat_analysis.delete_many({})
-    await db.alerts.delete_many({})
 
     # 1. Simulate the Hidden Wiki Links
     onion_links = list(SIMULATED_ONION_PAGES.keys())
@@ -301,11 +298,19 @@ async def run_simulation():
             "title": data["title"],
             "timestamp": datetime.utcnow(),
             "processed": False,
-            "source": "hidden_wiki_discovery"
+            "source": "hidden_wiki_discovery",
+            "is_synthetic": True  # Properly mark this data as synthetic!
         }
-        await db.raw_pages.insert_one(page_data)
-        print(f"  ✓ Ingested raw page: {url} (Title: \"{data['title']}\")")
-        results.append(url)
+        
+        # Insert without wiping existing database documents
+        existing = await db.raw_pages.find_one({"url": url})
+        if not existing:
+            await db.raw_pages.insert_one(page_data)
+            print(f"  ✓ Ingested raw page: {url} (Title: \"{data['title']}\")")
+            results.append(url)
+        else:
+            print(f"  ⊘ Raw page already exists: {url}")
+            results.append(url)
 
     # 4. Trigger the REAL ingestion/processing pipeline (AI, IOC regex, Scoring, Triage)
     print(f"\n{'='*70}")

@@ -132,8 +132,8 @@ DarkIntelliWeb/
 ├── threat_intelligence/
 │   ├── correlation.py            # NetworkX threat graph generation
 │   └── enrichment.py             # Live enrichment via VirusTotal & AbuseIPDB APIs
-├── utils/
-│   └── sample_data.py            # Seed script for demo/test data
+├── database/
+│   └── seed_demo.py              # Seed script for demo/test data
 ├── backend/
 │   └── Dockerfile
 ├── docker-compose.yml            # Full stack orchestration (6 services)
@@ -198,7 +198,7 @@ Navigate to the **Crawler Targets** tab in the dashboard and add `.onion` URLs. 
 ### 6. Seed Sample Data (Optional)
 
 ```bash
-docker-compose exec backend python utils/sample_data.py
+docker-compose exec backend python database/seed_demo.py
 ```
 
 ---

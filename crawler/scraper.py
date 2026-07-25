@@ -65,15 +65,25 @@ class DarkWebCrawler:
         if text_length < self.js_content_threshold:
             logger.info(f"Content too thin ({text_length} chars), attempting JS render for {url}")
             try:
-                from crawler.browser_worker import fetch_with_js
-                js_html = await fetch_with_js(url)
+                # Try routing to dedicated browser_crawler container via Celery first
+                try:
+                    from scheduler.tasks import fetch_with_js_task
+                    logger.info(f"Routing JS crawl for {url} to browser_crawler Celery queue...")
+                    def run_celery_task():
+                        res = fetch_with_js_task.apply_async(args=[url], queue='browser_crawling')
+                        return res.get(timeout=45)
+                    js_html = await asyncio.to_thread(run_celery_task)
+                except Exception as celery_err:
+                    logger.warning(f"Celery routing failed ({celery_err}), attempting direct in-process render...")
+                    # Standalone/in-process fallback
+                    from crawler.browser_worker import fetch_with_js
+                    js_html = await fetch_with_js(url)
+
                 if js_html:
                     js_text_length = len(BeautifulSoup(js_html, "html.parser").get_text(strip=True))
                     if js_text_length > text_length:
                         logger.info(f"JS render yielded {js_text_length} chars (up from {text_length})")
                         return js_html
-            except ImportError:
-                logger.debug("Playwright not available, skipping JS fallback.")
             except Exception as e:
                 logger.warning(f"JS fallback failed for {url}: {e}")
         return html

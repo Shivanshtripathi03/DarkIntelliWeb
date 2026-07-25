@@ -81,7 +81,8 @@ async def process_raw_pages():
                 "threat_category": category,
                 "confidence": confidence,
                 "extracted_indicators": enriched_iocs,
-                "content_snippet": text[:500]
+                "content_snippet": text[:500],
+                "is_synthetic": page.get("is_synthetic", False)
             }
             
             # Attach triage decision if available
@@ -112,7 +113,8 @@ async def process_raw_pages():
                     "timestamp": datetime.utcnow(),
                     "level": alert_level,
                     "message": alert_msg,
-                    "read": False
+                    "read": False,
+                    "is_synthetic": page.get("is_synthetic", False)
                 }
                 await db.alerts.insert_one(alert)
                 logger.warning(f"ALERT: {alert['message']}")
@@ -122,7 +124,8 @@ async def process_raw_pages():
                     "timestamp": datetime.utcnow(),
                     "level": "CRITICAL" if risk_score >= 90 else "HIGH",
                     "message": f"High risk threat detected at {url}: {category} with score {risk_score}",
-                    "read": False
+                    "read": False,
+                    "is_synthetic": page.get("is_synthetic", False)
                 }
                 await db.alerts.insert_one(alert)
                 logger.warning(f"ALERT: {alert['message']}")
@@ -132,3 +135,12 @@ async def process_raw_pages():
             
         except Exception as e:
             logger.error(f"Error processing page {page.get('url')}: {str(e)}")
+
+@celery_app.task(name="scheduler.tasks.fetch_with_js_task")
+def fetch_with_js_task(url: str, timeout_ms: int = 30000) -> str | None:
+    """Fetch a page using a real browser routed through Tor.
+    This task is routed to the dedicated browser_crawling queue/worker.
+    """
+    from crawler.browser_worker import fetch_with_js_sync
+    return fetch_with_js_sync(url, timeout_ms)
+
