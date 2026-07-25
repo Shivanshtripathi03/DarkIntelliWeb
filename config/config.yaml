@@ -19,7 +19,7 @@ apis:
   ipinfo: ""
 
 triage:
-  enabled: false
+  enabled: true
   cache_ttl_hours: 24
 
 categories_severity:
