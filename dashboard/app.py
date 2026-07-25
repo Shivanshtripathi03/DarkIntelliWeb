@@ -64,7 +64,7 @@ st.markdown("""
         );
         background-size: 100% 600px;
         animation: gridScanAnimation 12s linear infinite;
-        z-index: 0;
+        z-index: -1;
         pointer-events: none;
     }
 
