@@ -164,3 +164,15 @@ async def reset_database():
     return {"status": "ok", "message": "Database wiped successfully"}
 
 
+@router.get("/status")
+async def get_status():
+    """Gets the current status of the background crawler."""
+    doc = await db.system_status.find_one({"_id": "crawler"})
+    if not doc:
+        return {"status": "idle", "last_run": None}
+    return {
+        "status": doc.get("status", "idle"),
+        "last_run": doc.get("last_run").isoformat() if doc.get("last_run") else None
+    }
+
+

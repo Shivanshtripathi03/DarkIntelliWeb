@@ -287,7 +287,15 @@ except Exception:
 if _has_synthetic:
     st.sidebar.warning("⚠ Synthetic demo data present in database.")
 
-st.sidebar.info(f"{_sys_icon} System Status: **{_sys_status}**\n\n{_ai_icon} AI Engine: **{_ai_status}**")
+# Fetch crawler status
+try:
+    _crawler_status_data = requests.get(f"{API_URL}/status", timeout=3).json()
+    _crawler_status = _crawler_status_data.get("status", "idle")
+except Exception:
+    _crawler_status = "idle"
+_crawler_icon = "🔵 Scanning" if _crawler_status == "crawling" else "🟢 Idle"
+
+st.sidebar.info(f"{_sys_icon} System Status: **{_sys_status}**\n\n{_ai_icon} AI Engine: **{_ai_status}**\n\n⚙ Crawler: **{_crawler_icon}**")
 
 def fetch_data(endpoint):
     try:
@@ -679,9 +687,22 @@ elif page == "Crawler Targets":
                 
     st.markdown("---")
     st.subheader("Manual Operations")
-    if st.button("Run Manual Scan", help="Immediately triggers the crawler for all active targets."):
-        requests.post(f"{API_URL}/scan")
-        st.success("Scan initiated! Check the Overview or Explorer in a few minutes for new data.")
+    
+    # Check crawler status
+    try:
+        status_info = requests.get(f"{API_URL}/status", timeout=3).json()
+        is_crawling = status_info.get("status") == "crawling"
+    except Exception:
+        is_crawling = False
+        
+    if is_crawling:
+        st.info("🔍 **Scan In Progress:** The background crawler is currently scanning target Onion links. The sidebar status will show 'Scanning'. Stats will update automatically when finished.")
+        st.button("Scan Active...", disabled=True, key="scan_active_btn")
+    else:
+        if st.button("Run Manual Scan", help="Immediately triggers the crawler for all active targets.", key="run_scan_btn"):
+            requests.post(f"{API_URL}/scan")
+            st.success("Scan initiated! The crawler is starting up. Check status in the sidebar.")
+            st.rerun()
 
 
 elif page == "Settings":

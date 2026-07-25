@@ -30,16 +30,28 @@ def run_crawling_pipeline():
 async def _async_crawling_pipeline():
     # Force Motor to bind to the fresh loop created by celery
     db.reset()
-    targets = load_targets()
-    if not targets:
-        logger.warning("No targets found to crawl. Exiting pipeline.")
-        return
+    await db.system_status.update_one(
+        {"_id": "crawler"},
+        {"$set": {"status": "crawling", "last_run": datetime.utcnow()}},
+        upsert=True
+    )
+    try:
+        targets = load_targets()
+        if not targets:
+            logger.warning("No targets found to crawl. Exiting pipeline.")
+            return
 
-    crawler = DarkWebCrawler(targets)
-    await crawler.run()
-    
-    # Process unanalyzed raw HTML pages
-    await process_raw_pages()
+        crawler = DarkWebCrawler(targets)
+        await crawler.run()
+        
+        # Process unanalyzed raw HTML pages
+        await process_raw_pages()
+    finally:
+        await db.system_status.update_one(
+            {"_id": "crawler"},
+            {"$set": {"status": "idle", "last_run": datetime.utcnow()}},
+            upsert=True
+        )
 
 async def process_raw_pages():
     cursor = db.raw_pages.find({"processed": False})
