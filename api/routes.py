@@ -155,3 +155,12 @@ Threat Records:
     return {"summary": " ".join(summary_sentences) + recommendations}
 
 
+@router.post("/reset")
+async def reset_database():
+    """Wipes raw_pages, threat_analysis, and alerts collections."""
+    await db.raw_pages.delete_many({})
+    await db.threat_analysis.delete_many({})
+    await db.alerts.delete_many({})
+    return {"status": "ok", "message": "Database wiped successfully"}
+
+

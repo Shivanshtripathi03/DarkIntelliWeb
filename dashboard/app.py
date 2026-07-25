@@ -201,6 +201,16 @@ st.markdown("""
         margin: 0 !important;
         text-align: left !important;
     }
+    
+    /* Warning alert boxes high contrast override */
+    div[data-testid="stNotification"], div.stAlert {
+        background-color: rgba(234, 179, 8, 0.1) !important;
+        border: 1px solid rgba(234, 179, 8, 0.3) !important;
+    }
+    div[data-testid="stNotification"] p, div.stAlert p {
+        color: #fbbf24 !important; /* Amber text for warnings */
+        font-weight: 600 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -702,5 +712,19 @@ elif page == "Settings":
                 with open(config_path, "w") as f:
                     yaml.dump(yaml_config, f)
                 st.success("Configuration saved correctly. (Note: Celery beat restart required for frequency changes)")
+        
+        st.markdown("---")
+        st.subheader("Data Operations")
+        st.write("Wipe all crawled records, threat logs, and alerts in the MongoDB database to return the platform to a clean state. Doing so will remove the Synthetic Demo warning banner.")
+        if st.button("Wipe Telemetry Database", type="primary", help="Clears MongoDB threat records"):
+            try:
+                r = requests.post(f"{API_URL}/reset")
+                if r.status_code == 200:
+                    st.success("Database wiped successfully!")
+                    st.rerun()
+                else:
+                    st.error("Failed to reset database.")
+            except Exception as e:
+                st.error(f"Error reset database: {e}")
     else:
         st.error("Config file not found in environment.")
