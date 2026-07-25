@@ -31,90 +31,116 @@ st.set_page_config(page_title="DarkIntelliWeb SOC", layout="wide", page_icon="te
 # Custom CSS for Cybersecurity Theme
 st.markdown("""
 <style>
-    /* Premium Cybersecurity Dark Dot Matrix Grid Background */
+    /* Import modern clean fonts and hacker monospace fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+    /* Premium Dark Web Matrix Grid Background with subtle glowing aura */
     .stApp {
-        background-color: #020617 !important;
-        background-image: radial-gradient(rgba(30, 41, 59, 0.5) 1.5px, transparent 1.5px) !important;
-        background-size: 24px 24px !important;
+        background-color: #030712 !important;
+        background-image: 
+            linear-gradient(rgba(16, 185, 129, 0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(16, 185, 129, 0.02) 1px, transparent 1px),
+            radial-gradient(circle at 50% 10%, rgba(16, 185, 129, 0.06) 0%, transparent 60%) !important;
+        background-size: 24px 24px, 24px 24px, 100% 100% !important;
     }
     
-    /* Custom Webkit Scrollbars */
+    /* Fine Webkit Scrollbar */
     ::-webkit-scrollbar {
         width: 8px !important;
         height: 8px !important;
     }
     ::-webkit-scrollbar-track {
-        background: #020617 !important;
+        background: #030712 !important;
     }
     ::-webkit-scrollbar-thumb {
-        background: #1e293b !important;
+        background: #111827 !important;
+        border: 1px solid rgba(16, 185, 129, 0.2) !important;
         border-radius: 4px !important;
     }
     ::-webkit-scrollbar-thumb:hover {
-        background: #8b5cf6 !important;
+        background: #10b981 !important;
     }
 
-    /* Glassmorphism Metric Cards & Lift-on-hover */
+    /* Cyber Metric Cards (High Contrast Glassmorphism) */
     .stMetric {
-        background: rgba(15, 23, 42, 0.65) !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
-        border: 1px solid rgba(51, 65, 85, 0.4) !important;
-        border-left: 4px solid #3b82f6 !important;
-        border-radius: 10px !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+        background: rgba(3, 7, 18, 0.85) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(16, 185, 129, 0.25) !important;
+        border-left: 4px solid #10b981 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
     .stMetric:hover {
-        transform: translateY(-3px) !important;
-        border-color: rgba(139, 92, 246, 0.6) !important;
-        border-left-color: #8b5cf6 !important;
-        box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.3), 0 4px 8px -2px rgba(0, 0, 0, 0.05), 0 0 20px rgba(139, 92, 246, 0.2) !important;
+        transform: translateY(-2px) !important;
+        border-color: #10b981 !important;
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.25) !important;
+    }
+    
+    /* Metric Value Font Selection (Monospace style value for authenticity) */
+    [data-testid="stMetricValue"] {
+        font-family: 'JetBrains Mono', monospace !important;
+        color: #10b981 !important;
+        font-weight: 700 !important;
     }
     
     .css-1d391kg, .css-1v3fvcr {
-        background-color: #020617;
+        background-color: #030712;
     }
-    h1, h2, h3, h4, p, label, .stMarkdown {
-        font-family: 'Outfit', 'Inter', 'Roboto', sans-serif !important;
+    
+    /* High Readability Typography Hierarchy */
+    h1, h2, h3, h4, .streamlit-expanderHeader {
+        font-family: 'Share Tech Mono', 'Outfit', sans-serif !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
     }
+    p, label, span, .stMarkdown, td, th {
+        font-family: 'Inter', 'Roboto', sans-serif !important;
+        font-size: 0.95rem !important;
+        color: #94a3b8 !important; /* Slate-400 (very clear contrast on black) */
+    }
+    
     h1 {
         color: #f8fafc !important;
         font-weight: 700;
-        letter-spacing: -0.025em;
+        border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+        padding-bottom: 10px;
     }
     h2, h3 {
-        color: #f1f5f9 !important;
+        color: #e2e8f0 !important;
         font-weight: 600;
+        margin-top: 1.5rem !important;
     }
     
     /* Hide Streamlit header anchor links */
     a.anchor { display: none !important; }
     h1 a, h2 a, h3 a, h4 a, h5 a, h6 a { display: none !important; }
     
-    /* Glassmorphism Expanders */
+    /* Cyber Expanders (Monospace logs style) */
     .streamlit-expanderHeader {
-        background-color: rgba(15, 23, 42, 0.7) !important;
-        backdrop-filter: blur(8px) !important;
-        border: 1px solid rgba(51, 65, 85, 0.5) !important;
+        background-color: rgba(3, 7, 18, 0.8) !important;
+        border: 1px solid rgba(16, 185, 129, 0.2) !important;
         border-radius: 6px !important;
-        color: #f1f5f9 !important;
+        color: #e2e8f0 !important;
+        font-family: 'Share Tech Mono', monospace !important;
+        font-size: 0.9rem !important;
         transition: all 0.2s ease !important;
     }
     .streamlit-expanderHeader:hover {
-        background-color: rgba(30, 41, 59, 0.8) !important;
-        border-color: #3b82f6 !important;
+        background-color: rgba(16, 185, 129, 0.1) !important;
+        border-color: #10b981 !important;
     }
     .stDataFrame {
-        border: 1px solid rgba(51, 65, 85, 0.5);
+        border: 1px solid rgba(16, 185, 129, 0.2);
         border-radius: 6px;
-        background-color: rgba(15, 23, 42, 0.65) !important;
+        background-color: rgba(3, 7, 18, 0.85) !important;
     }
     
     /* Modern Creative Sidebar Navigation */
     section[data-testid="stSidebar"] {
-        background-color: #020617;
-        border-right: 1px solid rgba(30, 41, 59, 0.8);
+        background-color: #02040a;
+        border-right: 1px solid rgba(16, 185, 129, 0.15);
     }
     section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] {
         display: none !important;
@@ -127,8 +153,8 @@ st.markdown("""
     section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] label {
         padding: 0.75rem 1rem !important;
         border-radius: 0.5rem !important;
-        background-color: rgba(15, 23, 42, 0.6) !important;
-        border: 1px solid rgba(30, 41, 59, 0.8) !important;
+        background-color: rgba(3, 7, 18, 0.7) !important;
+        border: 1px solid rgba(16, 185, 129, 0.15) !important;
         cursor: pointer !important;
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
         width: 100% !important;
@@ -137,25 +163,25 @@ st.markdown("""
         box-sizing: border-box !important;
     }
     section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radiogroup"] label:hover {
-        background-color: rgba(30, 41, 59, 0.6) !important;
-        border-color: rgba(59, 130, 246, 0.5) !important;
+        background-color: rgba(16, 185, 129, 0.05) !important;
+        border-color: rgba(16, 185, 129, 0.4) !important;
         transform: translateX(4px) !important;
     }
     
-    /* Glowing active state for Sidebar items (inspired by React Bits Spotlight) */
+    /* Glowing active state for Sidebar items (inspired by Terminal Selected elements) */
     section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked),
     section[data-testid="stSidebar"] [data-testid="stRadio"] label[data-checked="true"] {
-        background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(49, 16, 66, 0.8) 100%) !important;
-        border-color: #8b5cf6 !important;
-        box-shadow: inset 0 0 10px rgba(139, 92, 246, 0.15), 0 0 15px rgba(139, 92, 246, 0.2) !important;
+        background: linear-gradient(135deg, rgba(6, 78, 59, 0.5) 0%, rgba(2, 44, 34, 0.7) 100%) !important;
+        border-color: #10b981 !important;
+        box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.15), 0 0 15px rgba(16, 185, 129, 0.15) !important;
     }
     section[data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) p,
     section[data-testid="stSidebar"] [data-testid="stRadio"] label[data-checked="true"] p {
-        color: #a78bfa !important;
+        color: #10b981 !important;
         font-weight: 600 !important;
     }
     
-    /* Hide the default radio circle elements */
+    /* Hide default radio circle selectors */
     section[data-testid="stSidebar"] [data-testid="stRadio"] div[role="radio"] {
         display: none !important;
     }
@@ -167,7 +193,7 @@ st.markdown("""
     }
     section[data-testid="stSidebar"] [data-testid="stRadio"] p {
         font-weight: 500 !important;
-        color: #94a3b8 !important;
+        color: #64748b !important;
         margin: 0 !important;
         text-align: left !important;
     }
@@ -175,11 +201,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.sidebar.markdown("""
-<div style='background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 20px; border-radius: 10px; border: 1px solid #334155; text-align: center; margin-bottom: 25px;'>
-    <h2 style='color: #f8fafc; font-size: 20px; margin-bottom: 8px; padding:0;'>DarkIntelliWeb</h2>
-    <span style='background-color: #3b82f6; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 1px;'>ENTERPRISE SOC</span>
+<div style='background: linear-gradient(135deg, #050b14 0%, #010307 100%); padding: 20px; border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.25); text-align: center; margin-bottom: 25px; box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);'>
+    <h2 style='color: #10b981; font-family: "Share Tech Mono", monospace; font-size: 22px; margin-bottom: 8px; padding:0; text-shadow: 0 0 8px rgba(16, 185, 129, 0.4);'>DarkIntelliWeb</h2>
+    <span style='background-color: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid #10b981; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; font-family: "Share Tech Mono", monospace;'>ENTERPRISE SOC</span>
 </div>
-<div style='font-size: 11px; color: #64748b; font-weight: 700; margin-bottom: 10px; padding-left: 5px; text-transform: uppercase; letter-spacing: 1px;'>Main Menu</div>
+<div style='font-size: 11px; color: #64748b; font-weight: 700; margin-bottom: 10px; padding-left: 5px; text-transform: uppercase; letter-spacing: 1.5px; font-family: "Share Tech Mono", monospace;'>Main Menu</div>
 """, unsafe_allow_html=True)
 
 page = st.sidebar.radio("Navigation", [
@@ -246,12 +272,12 @@ if page == "Threat Overview":
     if ai_summary and "summary" in ai_summary:
         st.markdown(
             f"""
-            <div style="background-color: #0f172a; border: 1px solid #1e293b; border-left: 4px solid #8b5cf6; padding: 20px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            <div style="background-color: rgba(3, 7, 18, 0.85); border: 1px solid rgba(16, 185, 129, 0.25); border-left: 4px solid #10b981; padding: 20px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.45); backdrop-filter: blur(16px);">
                 <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                    <span style="background-color: #8b5cf6; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-right: 10px; text-transform: uppercase; letter-spacing: 0.05em;">AI Executive Insight</span>
-                    <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 500;">Lead CISO Analyst Report</span>
+                    <span style="background-color: #10b981; color: #02040a; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; margin-right: 10px; text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Share Tech Mono', monospace;">AI Executive Insight</span>
+                    <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 500; font-family: 'Share Tech Mono', monospace;">Lead CISO Analyst Report</span>
                 </div>
-                <div style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap;">{ai_summary["summary"]}</div>
+                <div style="color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; font-family: 'Inter', sans-serif;">{ai_summary["summary"]}</div>
             </div>
             """,
             unsafe_allow_html=True
