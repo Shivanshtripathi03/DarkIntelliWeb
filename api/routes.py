@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import APIRouter, HTTPException, Depends, Request, Header
 from typing import List
 import os
@@ -8,9 +11,12 @@ from config.loader import load_targets, save_targets
 from threat_intelligence.correlation import generate_threat_graph
 from scheduler.tasks import run_crawling_pipeline, _async_crawling_pipeline
 
-SUPABASE_URL = os.environ.get("SUPABASE_URL", "https://vkinrbcqzvcellsmaciy.supabase.co")
-SUPABASE_ANON_KEY = os.environ.get("SUPABASE_ANON_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZraW5yYmNxenZjZWxsc21hY2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4OTg1MzAsImV4cCI6MjA3NjQ3NDUzMH0.zdfDwI9fv3sgNkSsyUoq-eZI7mt1wkO-gr6S8Sbq8BI")
-BACKEND_SECRET_KEY = os.environ.get("BACKEND_SECRET_KEY", "darkintelliweb_secret_key_2026")
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_ANON_KEY = os.environ.get("SUPABASE_ANON_KEY")
+BACKEND_SECRET_KEY = os.environ.get("BACKEND_SECRET_KEY")
+
+if not SUPABASE_URL or not SUPABASE_ANON_KEY or not BACKEND_SECRET_KEY:
+    raise RuntimeError("Missing required environment variables: SUPABASE_URL, SUPABASE_ANON_KEY, and BACKEND_SECRET_KEY must be set in the environment.")
 
 async def get_current_user(request: Request, authorization: str = Header(None)):
     # 1. Allow server-to-server calls via secret API key (e.g. from local Streamlit app)

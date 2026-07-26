@@ -27,7 +27,9 @@ if "backend" in API_BASE_URL:
 API_URL = API_BASE_URL + "/api"
 
 # Server-to-server API Key Authorization wrapper for backend security
-BACKEND_SECRET_KEY = os.getenv("BACKEND_SECRET_KEY", "darkintelliweb_secret_key_2026")
+BACKEND_SECRET_KEY = os.getenv("BACKEND_SECRET_KEY")
+if not BACKEND_SECRET_KEY:
+    raise RuntimeError("Missing BACKEND_SECRET_KEY environment variable. Streamlit dashboard cannot authenticate without it.")
 _orig_get = requests.get
 _orig_post = requests.post
 _orig_delete = requests.delete
