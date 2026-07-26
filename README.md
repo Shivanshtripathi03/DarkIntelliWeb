@@ -201,6 +201,24 @@ Navigate to the **Crawler Targets** tab in the dashboard and add `.onion` URLs. 
 docker-compose exec backend python database/seed_demo.py
 ```
 
+### 7. Optional React Frontend Setup
+
+To run the optional React frontend SPA client:
+1. Navigate to the `frontend/` directory:
+   ```bash
+   cd frontend
+   ```
+2. Copy `frontend/.env.example` to `frontend/.env`:
+   ```bash
+   cp .env.example .env
+   ```
+3. Open `frontend/.env` and fill in your Supabase credentials (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`).
+4. Install dependencies and launch the dev server:
+   ```bash
+   npm install
+   npm run dev
+   ```
+
 ---
 
 ## Configuration
