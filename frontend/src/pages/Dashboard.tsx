@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { Shield, AlertTriangle, CheckCircle, Activity } from 'lucide-react';
 import { Layout } from '../components/Layout';
 import { ScanResult, AIQuery, DashboardStats } from '../types';
 
-const API = import.meta.env.VITE_API_URL || 'http://uripadress:5000/api';
+const API = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 console.log('API =', API);
 
-
 export default function Dashboard() {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
   const [stats, setStats] = useState<DashboardStats>({
     totalScans: 0,
     highThreat: 0,
@@ -22,72 +25,96 @@ export default function Dashboard() {
   const [loadingAI, setLoadingAI] = useState(false);
 
   useEffect(() => {
-    const scans: ScanResult[] = JSON.parse(localStorage.getItem('scans') || '[]');
+    if (!loading && !user) {
+      navigate('/signin');
+      return;
+    }
+
+    if (!user) return;
+
+    async function fetchStatsAndThreats() {
+      try {
+        const overviewRes = await fetch(`${API}/overview`);
+        if (overviewRes.ok) {
+          const overview = await overviewRes.json();
+          setStats({
+            totalScans: overview.total_threats,
+            highThreat: overview.high_risk_alerts,
+            mediumThreat: Math.max(0, overview.total_threats - overview.high_risk_alerts),
+            safeThreat: 0,
+          });
+        }
+
+        const threatsRes = await fetch(`${API}/threats?limit=5`);
+        if (threatsRes.ok) {
+          const threatsData = await threatsRes.json();
+          const mappedScans: ScanResult[] = threatsData.threats.map((t: any) => ({
+            id: t.id || t._id,
+            url: t.url,
+            status: t.risk_score >= 80 ? 'high' : t.risk_score >= 50 ? 'medium' : 'safe',
+            threatLevel: t.risk_score >= 80 ? 'High' : t.risk_score >= 50 ? 'Medium' : 'Safe',
+            timestamp: new Date(t.timestamp).toLocaleString(),
+          }));
+          setRecentScans(mappedScans);
+        }
+      } catch (err) {
+        console.error("Failed to fetch real dashboard data:", err);
+      }
+    }
+
+    fetchStatsAndThreats();
+
     const queries: AIQuery[] = JSON.parse(localStorage.getItem('queries') || '[]');
-
-    const newStats: DashboardStats = {
-      totalScans: scans.length,
-      highThreat: scans.filter(s => s.status === 'high').length,
-      mediumThreat: scans.filter(s => s.status === 'medium').length,
-      safeThreat: scans.filter(s => s.status === 'safe').length,
-    };
-
-    setStats(newStats);
-    setRecentScans(scans.slice(-5).reverse());
     setRecentQueries(queries.slice(-3).reverse());
-  }, []);
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00FFFF]"></div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
 const handleScanURL = async () => {
   if (!urlToScan.trim()) return;
   setLoadingScan(true);
 
   try {
-    const status = urlToScan.includes('onion') ? 'high' : 'safe';
-    const threatLevel = status === 'high' ? 'High' : 'Safe';
-
-    const reqUrl = `${API}/scan`;
-    console.log('SCAN →', reqUrl, { url: urlToScan, status, threatLevel });
-
-    const response = await fetch(reqUrl, {
+    const addRes = await fetch(`${API}/targets`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url: urlToScan, status, threatLevel }),
+      body: JSON.stringify({ url: urlToScan }),
     });
 
-    console.log('SCAN ← status:', response.status, response.statusText);
-
-    const ct = response.headers.get('content-type') || '';
-    const raw = await (ct.includes('application/json') ? response.json() : response.text());
-    console.log('SCAN ← body:', raw);
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status} ${response.statusText}`);
+    if (!addRes.ok) {
+      throw new Error(`Failed to add target: ${addRes.statusText}`);
     }
 
-    const result: any = raw;
+    const scanRes = await fetch(`${API}/scan`, {
+      method: 'POST',
+    });
+
+    if (!scanRes.ok) {
+      throw new Error(`Failed to initiate scan: ${scanRes.statusText}`);
+    }
 
     const newScan: ScanResult = {
-      id: result?.id ?? Date.now(),
-      url: result?.url ?? urlToScan,
-      status: result?.status ?? status,
-      threatLevel: result?.threatLevel ?? threatLevel,
+      id: Date.now().toString(),
+      url: urlToScan,
+      status: 'medium',
+      threatLevel: 'Scanning...',
       timestamp: new Date().toLocaleString(),
     };
 
-    const updatedScans = [newScan, ...recentScans].slice(0, 20);
-    localStorage.setItem('scans', JSON.stringify(updatedScans));
-    setRecentScans(updatedScans);
-
-    setStats({
-      totalScans: updatedScans.length,
-      highThreat: updatedScans.filter(s => s.status === 'high').length,
-      mediumThreat: updatedScans.filter(s => s.status === 'medium').length,
-      safeThreat: updatedScans.filter(s => s.status === 'safe').length,
-    });
+    setRecentScans(prev => [newScan, ...prev].slice(0, 5));
     setUrlToScan('');
+    alert('Scan initiated successfully! The crawler is now scanning the target.');
   } catch (err) {
     console.error('SCAN ✖ error:', err);
-    alert('Scan failed. Check console for details.');
+    alert('Failed to start scan.');
   } finally {
     setLoadingScan(false);
   }
@@ -105,22 +132,26 @@ const handleScanURL = async () => {
         body: JSON.stringify({ query: aiQuery }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const result = await response.json();
 
       const newQuery: AIQuery = {
         id: Date.now(),
         query: aiQuery,
-        answer: result.answer,
+        answer: result.answer || "No response received",
         timestamp: new Date().toLocaleString(),
       };
 
       const updatedQueries = [newQuery, ...recentQueries].slice(0, 20);
       localStorage.setItem('queries', JSON.stringify(updatedQueries));
-      setRecentQueries(updatedQueries);
+      setRecentQueries(updatedQueries.slice(0, 3));
       setAiQuery('');
     } catch (err) {
+      console.error("AI query error:", err);
       alert('AI query failed. Try again.');
-      console.error(err);
     } finally {
       setLoadingAI(false);
     }
