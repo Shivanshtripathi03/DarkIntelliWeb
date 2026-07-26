@@ -4,7 +4,7 @@ from database.db import db
 from database.models import ThreatLog, Alert
 from config.loader import load_targets, save_targets
 from threat_intelligence.correlation import generate_threat_graph
-from scheduler.tasks import run_crawling_pipeline
+from scheduler.tasks import run_crawling_pipeline, _async_crawling_pipeline
 
 router = APIRouter()
 
@@ -79,10 +79,22 @@ from scheduler.tasks import _async_crawling_pipeline
 
 @router.post("/scan")
 async def trigger_scan():
+    # Check if any celery workers are online
+    celery_active = False
     try:
-        run_crawling_pipeline.delay()
+        from scheduler.celery_app import celery_app
+        stats = celery_app.control.inspect().stats()
+        if stats:
+            celery_active = True
     except Exception:
+        pass
+
+    if celery_active:
+        run_crawling_pipeline.delay()
+    else:
+        # Fall back to local asyncio task since Celery worker is offline
         asyncio.create_task(_async_crawling_pipeline())
+        
     return {"status": "ok", "message": "Scan initiated"}
 
 import re
