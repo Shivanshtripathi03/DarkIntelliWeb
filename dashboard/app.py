@@ -743,7 +743,7 @@ elif page == "Settings":
     st.title("Engine Settings")
     st.markdown("Configure global parameters for the DarkIntelliWeb engine. These settings define operational behavior across Docker containers.")
     
-    # Normally read from config.yaml. For this UI, we will load it if local or display a mock form.
+    # Read global configurations directly from config/config.yaml.
     # Since we mapped volume `.:/app`, backend and dashboard can share file reads.
     config_path = "/app/config/config.yaml"
     if not os.path.exists(config_path):

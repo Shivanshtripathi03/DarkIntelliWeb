@@ -87,7 +87,7 @@ async def enrich_indicator(ioc_type: str, value: str) -> dict:
             vt_stats = await fetch_virustotal(session, f"domains/{value}")
             metadata["malware_detection_count"] = vt_stats.get("malicious", 0) + vt_stats.get("suspicious", 0)
             
-            # Dummy score based on detections
+            # Derived reputation score from VT detection count
             metadata["reputation_score"] = min(100, metadata["malware_detection_count"] * 10)
             
         elif ioc_type == "hash":
