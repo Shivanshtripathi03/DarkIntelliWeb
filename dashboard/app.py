@@ -26,6 +26,35 @@ if "backend" in API_BASE_URL:
 
 API_URL = API_BASE_URL + "/api"
 
+# Server-to-server API Key Authorization wrapper for backend security
+BACKEND_SECRET_KEY = os.getenv("BACKEND_SECRET_KEY", "darkintelliweb_secret_key_2026")
+_orig_get = requests.get
+_orig_post = requests.post
+_orig_delete = requests.delete
+
+def authenticated_get(url, **kwargs):
+    headers = kwargs.get("headers", {})
+    headers["x-api-key"] = BACKEND_SECRET_KEY
+    kwargs["headers"] = headers
+    return _orig_get(url, **kwargs)
+
+def authenticated_post(url, **kwargs):
+    headers = kwargs.get("headers", {})
+    headers["x-api-key"] = BACKEND_SECRET_KEY
+    kwargs["headers"] = headers
+    return _orig_post(url, **kwargs)
+
+def authenticated_delete(url, **kwargs):
+    headers = kwargs.get("headers", {})
+    headers["x-api-key"] = BACKEND_SECRET_KEY
+    kwargs["headers"] = headers
+    return _orig_delete(url, **kwargs)
+
+# Monkeypatch requests calls to automatically append system auth keys
+requests.get = authenticated_get
+requests.post = authenticated_post
+requests.delete = authenticated_delete
+
 st.set_page_config(page_title="DarkIntelliWeb SOC", layout="wide", page_icon="terminal")
 
 # Custom CSS for Cybersecurity Theme

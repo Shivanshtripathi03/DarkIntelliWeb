@@ -5,8 +5,26 @@ import { Shield, AlertTriangle, CheckCircle, Activity } from 'lucide-react';
 import { Layout } from '../components/Layout';
 import { ScanResult, AIQuery, DashboardStats } from '../types';
 
+import { supabase } from '../lib/supabase';
+
 const API = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 console.log('API =', API);
+
+const apiFetch = async (url: string, options: RequestInit = {}) => {
+  const session = await supabase.auth.getSession();
+  const token = session.data.session?.access_token;
+  
+  const headers = {
+    ...options.headers,
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  };
+  
+  return fetch(url, {
+    ...options,
+    headers
+  });
+};
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
@@ -34,7 +52,7 @@ export default function Dashboard() {
 
     async function fetchStatsAndThreats() {
       try {
-        const overviewRes = await fetch(`${API}/overview`);
+        const overviewRes = await apiFetch(`${API}/overview`);
         if (overviewRes.ok) {
           const overview = await overviewRes.json();
           setStats({
@@ -45,7 +63,7 @@ export default function Dashboard() {
           });
         }
 
-        const threatsRes = await fetch(`${API}/threats?limit=5`);
+        const threatsRes = await apiFetch(`${API}/threats?limit=5`);
         if (threatsRes.ok) {
           const threatsData = await threatsRes.json();
           const mappedScans: ScanResult[] = threatsData.threats.map((t: any) => ({
@@ -83,7 +101,7 @@ const handleScanURL = async () => {
   setLoadingScan(true);
 
   try {
-    const addRes = await fetch(`${API}/targets`, {
+    const addRes = await apiFetch(`${API}/targets`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url: urlToScan }),
@@ -93,7 +111,7 @@ const handleScanURL = async () => {
       throw new Error(`Failed to add target: ${addRes.statusText}`);
     }
 
-    const scanRes = await fetch(`${API}/scan`, {
+    const scanRes = await apiFetch(`${API}/scan`, {
       method: 'POST',
     });
 
@@ -126,7 +144,7 @@ const handleScanURL = async () => {
     setLoadingAI(true);
 
     try {
-      const response = await fetch(`${API}/query`, {
+      const response = await apiFetch(`${API}/query`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: aiQuery }),
