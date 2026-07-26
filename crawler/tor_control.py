@@ -5,7 +5,7 @@ from config.logger import setup_logger
 
 logger = setup_logger("tor_control")
 
-TOR_CONTROL_HOST = os.environ.get("TOR_CONTROL_HOST", "localhost")
+TOR_CONTROL_HOST = os.environ.get("TOR_CONTROL_HOST", "127.0.0.1")
 TOR_CONTROL_PORT = int(os.environ.get("TOR_CONTROL_PORT", 9051))
 
 

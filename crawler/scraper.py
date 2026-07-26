@@ -186,7 +186,8 @@ class DarkWebCrawler:
                         await self.crawl_page(session, next_url, depth + 1)
 
     async def run(self):
-        connector = ProxyConnector.from_url(self.proxy_url) if self.proxy_url else None
+        # ssl=False: .onion HTTPS doesn't need cert verification (Tor provides E2E encryption)
+        connector = ProxyConnector.from_url(self.proxy_url, ssl=False) if self.proxy_url else None
         
         try:
             async with aiohttp.ClientSession(connector=connector) as session:
