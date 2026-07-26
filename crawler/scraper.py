@@ -52,17 +52,23 @@ class DarkWebCrawler:
             # Bypass SOCKS proxy for standard clearnet URLs to allow direct scraping
             if ".onion" not in url:
                 logger.info(f"Clearnet URL detected. Fetching directly: {url}")
-                # Use a clean direct connection session
-                async with aiohttp.ClientSession() as direct_session:
+                # Use ssl=False to bypass macOS system cert store issues for scraping targets
+                connector = aiohttp.TCPConnector(ssl=False)
+                async with aiohttp.ClientSession(connector=connector) as direct_session:
                     headers = {
                         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:109.0) Gecko/20100101 Firefox/115.0",
                         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                        "Accept-Language": "en-US,en;q=0.5",
                     }
                     async with direct_session.get(url, headers=headers, timeout=self.timeout) as response:
                         if response.status == 200:
                             return await response.text()
+                        elif response.status in (301, 302):
+                            redirect = response.headers.get("Location")
+                            logger.info(f"Redirect {response.status} -> {redirect}")
+                            return None
                         else:
-                            logger.warning(f"Failed to fetch clearnet {url} directly - Status: {response.status}")
+                            logger.warning(f"Failed to fetch clearnet {url} - Status: {response.status}")
                             return None
 
             headers = {
