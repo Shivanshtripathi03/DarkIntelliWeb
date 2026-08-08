@@ -284,6 +284,33 @@ The Streamlit dashboard provides **8 pages** for comprehensive threat intelligen
 7. **Crawler Targets** — Add/remove `.onion` targets, trigger manual scans
 8. **Settings** — Runtime configuration for scoring thresholds, crawl intervals, proxy settings, and API keys
 
+### Platform Previews
+
+<p align="center">
+  <b>1. Threat Overview Dashboard (Sleek Dark Theme)</b><br>
+  <img src="screenshots/threat_overview.png" width="100%" />
+</p>
+
+<p align="center">
+  <b>2. Interactive Threat Intelligence Graph</b><br>
+  <img src="screenshots/threat_intelligence_graph.png" width="100%" />
+</p>
+
+<p align="center">
+  <b>3. Threat Explorer & Search Engine</b><br>
+  <img src="screenshots/threat_explorer.png" width="100%" />
+</p>
+
+<p align="center">
+  <b>4. Indicators of Compromise (IOC) Hub</b><br>
+  <img src="screenshots/indicators_of_compromise.png" width="100%" />
+</p>
+
+<p align="center">
+  <b>5. Security Crawler Settings & Dynamic Rules</b><br>
+  <img src="screenshots/settings.png" width="100%" />
+</p>
+
 ---
 
 ## Contributing
